@@ -30,7 +30,7 @@ def test1():
     print(e._op)
     print()
 
-    e.backward()
+    e.backward() ùùù
 
 if __name__ == "__main__":
     test1()
