@@ -24,20 +24,13 @@ def test1():
 
     # Test nested case
     d = Value(4)
-    e = c + c
+    e = c - d + 1
     print(e)
     print(e._children)
     print(e._op)
     print()
 
     e.backward()
-    print(e.grad)
-    print(a.grad)
-    print(b.grad)
-    print(c.grad)
-    print(d.grad)
-
-
 
 if __name__ == "__main__":
     test1()
