@@ -24,7 +24,7 @@ def test1():
 
     # Test nested case
     d = Value(4)
-    e = c - d
+    e = c + c
     print(e)
     print(e._children)
     print(e._op)
