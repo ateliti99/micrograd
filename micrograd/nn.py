@@ -14,11 +14,11 @@ class Neuron:
         self.weights = [Value(random.uniform(-1, 1)) for _ in range(n_inputs)]
         self.bias = Value(random.uniform(-1, 1))
 
-    def __call__(self, x):
+    def __call__(self, x, activation_function=Value.relu):
         if len(x) != len(self.weights):
             raise LengthMismatchError 
         out = sum((wi*xi for wi, xi in zip(self.weights, x)), self.bias)
-        out = out.relu()
+        out = activation_function(out)
         return out
 
     def parameters(self):
@@ -30,8 +30,8 @@ class Layer:
         self.n_outputs = n_outputs
         self.layer = [Neuron(n_inputs) for _ in range(n_outputs)]
 
-    def __call__(self, x):
-        outs = [neuron(x) for neuron in self.layer]
+    def __call__(self, x, activation_function=Value.relu):
+        outs = [neuron(x, activation_function) for neuron in self.layer]
         return outs[0] if len(outs) == 1 else outs
     
     def parameters(self):
@@ -43,9 +43,9 @@ class MLP:
         sz = [n_inputs] + n_outputs
         self.layers = [Layer(sz[i+1], sz[i]) for i in range(len(n_outputs))]
 
-    def __call__(self, x):
+    def __call__(self, x, activation_function=Value.relu):
         for layer in self.layers:
-            x = layer(x)
+            x = layer(x, activation_function)
         return x
     
     def parameters(self):
