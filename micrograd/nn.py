@@ -1,4 +1,5 @@
 import random
+from math import sqrt
 from .engine import Value
 
 class LengthMismatchError(Exception):
@@ -9,9 +10,11 @@ class LengthMismatchError(Exception):
 
 class Neuron:
     
-    def __init__(self, n_inputs):
+    def __init__(self, n_inputs, initialization=None):
         self.n_inputs = n_inputs
-        self.weights = [Value(random.uniform(-1, 1)) for _ in range(n_inputs)]
+        if initialization is None:
+            initialization = self.initialize_weights_he
+        self.weights = initialization(n_inputs)
         self.bias = Value(random.uniform(-1, 1))
 
     def __call__(self, x, activation_function=Value.relu):
@@ -23,6 +26,22 @@ class Neuron:
 
     def parameters(self):
         return self.weights + [self.bias]
+    
+    @staticmethod
+    def initialize_weights_uniform(shape):
+        return [Value(random.uniform(-1, 1)) for _ in range(shape)]
+
+    @staticmethod
+    def initialize_bias_uniform():
+        return Value(random.uniform(-1, 1))
+
+    @staticmethod
+    def initialize_weights_xavier(n_inputs):
+        return [Value(random.uniform(-sqrt(6 / (n_inputs + 1)), sqrt(6 / (n_inputs + 1)))) for _ in range(n_inputs)]
+
+    @staticmethod
+    def initialize_weights_he(n_inputs):
+        return [Value(random.uniform(-sqrt(2 / n_inputs), sqrt(2 / n_inputs))) for _ in range(n_inputs)]
     
 class Layer:
 
