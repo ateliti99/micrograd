@@ -1,9 +1,9 @@
 import math
 
 class Value():
-    def __init__(self, data: float, _children = set(), _op = '') -> None:
+    def __init__(self, data: float, _children = (), _op = '') -> None:
         self.data = float(data)
-        self._children = _children
+        self._children = set(_children)
         self._op = _op
         self.grad = 0.0
         self._backward = lambda: None
