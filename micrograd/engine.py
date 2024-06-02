@@ -44,6 +44,15 @@ class Value():
 
         return out
     
+    def __pow__(self, exp):
+        out = Value(self.data ** exp, (self, ), 'pow')
+
+        def _backward():
+            self.grad += ((exp) * (self.data ** (exp - 1))) * out.grad
+        out._backward = _backward
+
+        return out
+    
     def __truediv__(self, other):
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data / other.data, (self, other), '/')
@@ -57,7 +66,7 @@ class Value():
     def tanh(self):
         x = self.data
         t = (math.exp(2*x) - 1) / (math.exp(2*x) + 1)
-        out = Value(t)
+        out = Value(t, (self, ), "tanh")
 
         def _backward():
             self.grad += (1 - t ** 2) * out.grad
@@ -67,10 +76,10 @@ class Value():
     
     def relu(self):
         x = self.data
-        out = Value(0 if x <= 0 else 0)
+        out = Value(0 if x <= 0 else x, (self, ), "relu")
 
         def _backward():
-            self.grad += 0 if x <= 0 else x
+            self.grad += (0 if x <= 0 else 1) * out.grad
         out._backward = _backward
 
         return out
