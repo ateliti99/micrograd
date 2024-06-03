@@ -73,3 +73,7 @@ class MLP:
     def zero_grad(self):
         for p in self.parameters():
             p.grad = 0
+
+    def update(self, learning_rate=0.01):
+        for p in self.parameters():
+            p.data -= learning_rate * p.grad

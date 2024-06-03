@@ -79,8 +79,9 @@ class TestMicrograd(unittest.TestCase):
             loss.backward()
             
             # Update weights and biases
-            for p in nn.parameters():
-                    p.data -= lr * p.grad
+            # for p in nn.parameters():
+            #         p.data -= lr * p.grad
+            nn.update()
 
         self.assertAlmostEqual(out.data, 34, places=1)
 
