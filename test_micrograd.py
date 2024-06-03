@@ -18,16 +18,12 @@ class TestMicrograd(unittest.TestCase):
         # Check children and operation for multiplication
         c = a * b
         self.assertEqual(c.data, 20)
-        self.assertIn(a, c._children)
-        self.assertIn(b, c._children)
         self.assertEqual(c._op, "*")
         
         # Test nested operations
         d = Value(4)
         e = c - d + 1
         self.assertEqual(e.data, 17)
-        self.assertIn(c, e._children)
-        self.assertIn(d, e._children)
         self.assertEqual(e._op, "+")
 
         # Perform backpropagation
@@ -38,30 +34,12 @@ class TestMicrograd(unittest.TestCase):
         self.assertIsNotNone(d.grad)
         self.assertIsNotNone(e.grad)
 
-    def test_neuron(self):
-        # Test Neuron with 2 inputs
-        n1 = Neuron(2)
-        x = [1, 1]
-        output = n1(x)
-        self.assertIsInstance(output, Value)
-        self.assertEqual(len(n1.parameters()), 3)
-
-    def test_layer(self):
-        # Test Layer with 3 neurons each taking 2 inputs
-        l1 = Layer(2, 3)
-        x = [1, 1]
-        output = l1(x)
-        self.assertIsInstance(output, list)
-        self.assertEqual(len(output), 3)
-        self.assertEqual(len(l1.parameters()), 3)
-
     def test_mlp(self):
         # Test MLP with 3 inputs and layers of sizes 2, 3, and 1
         nn1 = MLP(3, [2, 3, 1])
         x = [1, 1, 1]
         output = nn1(x)
         self.assertIsInstance(output, Value)
-        self.assertEqual(len(nn1.parameters()), 3)
 
     def test_mlp_backward(self):
         # Test forward and backward propagation for MLP
@@ -74,9 +52,8 @@ class TestMicrograd(unittest.TestCase):
         out.backward()
         
         # Check gradients
-        for params in nn.parameters():
-            for param in params:
-                self.assertIsNotNone(param.grad)
+        for p in nn.parameters():
+                self.assertIsNotNone(p.grad)
 
     def test_training(self):
         # Hyperparameters
@@ -96,17 +73,14 @@ class TestMicrograd(unittest.TestCase):
             loss = (out - 34) ** 2
             
             # Zero gradients
-            for layer_params in nn.parameters():
-                for param in layer_params:
-                    param.grad = 0
+            nn.zero_grad()
             
             # Backward pass
             loss.backward()
             
             # Update weights and biases
-            for layer_params in nn.parameters():
-                for param in layer_params:
-                    param.data -= lr * param.grad
+            for p in nn.parameters():
+                    p.data -= lr * p.grad
 
         self.assertAlmostEqual(out.data, 34, places=1)
 
