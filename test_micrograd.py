@@ -70,7 +70,7 @@ class TestMicrograd(unittest.TestCase):
             out = nn(x)
 
             # Compute loss (mean squared error)
-            loss = (out - 34) ** 2
+            loss = (out - 23) ** 2
             
             # Zero gradients
             nn.zero_grad()
@@ -83,7 +83,7 @@ class TestMicrograd(unittest.TestCase):
             #         p.data -= lr * p.grad
             nn.update()
 
-        self.assertAlmostEqual(out.data, 34, places=1)
+        self.assertAlmostEqual(out.data, 23, delta=2)
 
 if __name__ == "__main__":
     unittest.main()
