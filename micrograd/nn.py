@@ -12,10 +12,10 @@ class Neuron:
     
     def __init__(self, n_inputs):
         self.n_inputs = n_inputs
-        self.weights = [Value(random.uniform(-1, 1)) for _ in range(n_inputs)]
-        self.bias = Value(random.uniform(-1, 1))
+        self.weights = [Value(random.uniform(-1, 1)) for _ in range(n_inputs)] # to be reinitialize when generating layer or MLP
+        self.bias = Value(random.uniform(-1, 1)) # to be reinitialize when generating layer or MLP
 
-    def __call__(self, x, activation_function=Value.relu):
+    def __call__(self, x, activation_function=Value.tanh):
         if len(x) != len(self.weights):
             raise LengthMismatchError 
         out = sum((wi*xi for wi, xi in zip(self.weights, x)), self.bias)

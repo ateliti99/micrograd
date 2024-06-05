@@ -1,9 +1,9 @@
 import math
 
 class Value():
-    def __init__(self, data: float, _children = (), _op = '') -> None:
+    def __init__(self, data: float,  _children = (), _op = '') -> None:
         self.data = float(data)
-        self._children = set(_children)
+        self._prev = set(_children)
         self._op = _op
         self.grad = 0.0
         self._backward = lambda: None
@@ -75,29 +75,28 @@ class Value():
         return out
     
     def relu(self):
-        x = self.data
-        out = Value(0 if x <= 0 else x, (self, ), "relu")
+        out = Value(0 if self.data < 0 else self.data, (self,), 'ReLU')
 
         def _backward():
-            self.grad += (0 if x <= 0 else 1) * out.grad
+            self.grad += (out.data > 0) * out.grad
         out._backward = _backward
+
+        return out
 
         return out
     
     def backward(self):
-        topo_sort = []; topo_sort.append(self)
+        topo = []
         visited = set()
-        def topo_sorting(node):
-            for child in node._children:
-                if child not in visited:
-                    topo_sort.append(child)
-                    visited.add(child)
-            for child in node._children:
-                topo_sorting(child)
-            return
-        topo_sorting(self)
 
+        def build_topo(v):
+            if v not in visited:
+                visited.add(v)
+                for child in v._prev:
+                    build_topo(child)
+                topo.append(v)
+        build_topo(self)
+        
         self.grad = 1.0
-
-        for node in topo_sort:
+        for node in reversed(topo):
             node._backward()
