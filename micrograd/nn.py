@@ -1,4 +1,5 @@
 import random
+import math
 from .engine import Value
 
 class LengthMismatchError(Exception):
@@ -49,12 +50,19 @@ class Neuron(Module):
 
     def parameters(self):
         return self.weights + [self.bias]
+    
+    def he_initialization(self, n_inputs):
+        a = math.sqrt(6 / n_inputs)
+        for weight in self.weights:
+            weight.value = random.uniform(-a, a)
 
 class Layer(Module):
 
     def __init__(self, n_outputs, n_inputs):
-        self.n_outputs = n_outputs
         self.layer = [Neuron(n_inputs) for _ in range(n_outputs)]
+        # He initialization
+        for neuron in self.layer:
+            neuron.he_initialization(n_inputs)
 
     def __call__(self, x, **kargs):
         outs = [neuron(x, **kargs) for neuron in self.layer]
@@ -62,6 +70,12 @@ class Layer(Module):
     
     def parameters(self):
         return [p for n in self.layer for p in n.parameters()]
+    
+    def he_initialization(self, n_inputs, n_outputs):
+        a, b = math.sqrt(6/n_inputs), math.sqrt(6/n_outputs)
+        he_parameters = [Value(random.uniform(a,b)) for _ in range(len(self.parameters))]
+        for p, he_p in zip(self.parameters(), he_parameters):
+            p = he_p    
     
 class MLP(Module):
 
