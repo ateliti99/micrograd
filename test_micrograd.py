@@ -18,7 +18,7 @@ class TestNeuralNetwork(unittest.TestCase):
     def test_neuron_call(self):
         n = Neuron(3)
         x = [Value(1), Value(2), Value(3)]
-        result = n(x, activation_function=Value.relu)
+        result = n(x, activation_function="relu")
         self.assertEqual(result.data, max(0, 3.5))  # relu(0.5 * 1 + 0.5 * 2 + 0.5 * 3 + 0.5)
 
     def test_neuron_length_mismatch(self):

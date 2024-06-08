@@ -82,8 +82,6 @@ class Value():
         out._backward = _backward
 
         return out
-
-        return out
     
     def backward(self):
         topo = []
