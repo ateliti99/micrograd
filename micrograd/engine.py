@@ -67,7 +67,8 @@ class Value():
         out = Value(self.data / other.data, (self, other), '/')
 
         def _backward():
-            raise NotImplementedError
+            self.grad += (1 / other.data) * out.grad
+            other.grad += - (self.data / (other.data ** 2)) * out.grad
         out._backward = _backward
 
         return out
