@@ -22,6 +22,9 @@ class Value():
 
         return out
     
+    def __radd__(self, other):
+        return self.__add__(other)
+    
     def __mul__(self, other):
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data * other.data, (self, other), '*')
@@ -33,6 +36,9 @@ class Value():
 
         return out
     
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
     def __sub__(self, other):
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data - other.data, (self, other), '-')
@@ -43,6 +49,9 @@ class Value():
         out._backward = _backward
 
         return out
+    
+    def __rsub__(self, other):
+        return self.__sub__(other)
     
     def __pow__(self, exp):
         out = Value(self.data ** exp, (self, ), 'pow')
