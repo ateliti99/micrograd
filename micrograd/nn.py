@@ -53,8 +53,8 @@ class Neuron(Module):
     
     def he_initialization(self, n_inputs):
         a = math.sqrt(6 / n_inputs)
-        for weight in self.weights:
-            weight.data = random.uniform(-a, a)
+        for p in self.parameters():
+            p.data = random.uniform(-a, a)
 
 class Layer(Module):
 
