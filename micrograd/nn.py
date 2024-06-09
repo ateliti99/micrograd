@@ -69,13 +69,7 @@ class Layer(Module):
         return outs[0] if len(outs) == 1 else outs
     
     def parameters(self):
-        return [p for n in self.layer for p in n.parameters()]
-    
-    def he_initialization(self, n_inputs, n_outputs):
-        a, b = math.sqrt(6/n_inputs), math.sqrt(6/n_outputs)
-        he_parameters = [Value(random.uniform(a,b)) for _ in range(len(self.parameters))]
-        for p, he_p in zip(self.parameters(), he_parameters):
-            p = he_p    
+        return [p for n in self.layer for p in n.parameters()]  
     
 class MLP(Module):
 
