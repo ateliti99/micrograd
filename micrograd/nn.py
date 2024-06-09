@@ -11,7 +11,7 @@ class LengthMismatchError(Exception):
 class Module:
     
     def parameters(self):
-        pass
+        return []
 
     def zero_grad(self):
         for p in self.parameters():
